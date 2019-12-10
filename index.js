@@ -34,6 +34,7 @@ const redisClient = redis.createClient({
     db: redisOptions.db
 });
 
+// create RateLimit instance
 const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 1});
 
 // construct express
@@ -41,6 +42,8 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// set rate limit middleware
 app.use(rateLimit.setRateLimiterMiddleware());
 
 const loginThrottlePubSub = new LoginThrottlePubSub(redisOptions);
