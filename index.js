@@ -35,7 +35,7 @@ const redisClient = redis.createClient({
 });
 
 // create RateLimit instance
-const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 1});
+const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 3});
 
 // construct express
 const app = express();
