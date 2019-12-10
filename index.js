@@ -1,9 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const redis = require('redis');
 require('dotenv').config()
 
 const LoginThrottlePubSub = require('./login_throttle_sub');
 const LoginReminder = require('./login_reminder');
+
+const RateLimit = require('./middleware/rate_limit');
 
 const PORT = process.env.PORT;
 
@@ -24,11 +27,21 @@ const redisOptions = {
     channel: '__keyevent@0__:expired'
 };
 
+const redisClient = redis.createClient({
+    host: redisOptions.host,
+    port: redisOptions.port,
+    password: redisOptions.password,
+    db: redisOptions.db
+});
+
+const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 1});
+
 // construct express
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(rateLimit.setRateLimiterMiddleware());
 
 const loginThrottlePubSub = new LoginThrottlePubSub(redisOptions);
 const loginReminder = new LoginReminder(redisOptions);
