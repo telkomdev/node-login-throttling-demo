@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const redis = require('redis');
-require('dotenv').config()
+require('dotenv').config();
 
 const LoginThrottlePubSub = require('./login_throttle_sub');
 const LoginReminder = require('./login_reminder');
