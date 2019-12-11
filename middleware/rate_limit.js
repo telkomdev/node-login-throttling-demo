@@ -18,7 +18,7 @@ class RateLimit {
 
           // express user
           const ip = req.ip || req.headers['x-forwarded-for'];
-          this.rateLimiter.consume(req.ip)
+          this.rateLimiter.consume(ip)
             .then(() => {
               next();
             })
