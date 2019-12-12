@@ -1,12 +1,20 @@
-const {RateLimiterRedis} = require('rate-limiter-flexible');
+const {RateLimiterRedis, RateLimiterMemory} = require('rate-limiter-flexible');
 
 class RateLimit {
     constructor(options = {}) {
+      // assume you are not confidence with your redis instance
+      // so take care your Redis rate limiter
+      const rateLimiterMemory = new RateLimiterMemory({
+        points: options.points, // 300 / 5 if there are 5 processes at all
+        duration: options.duration,
+      });
+
         this.rateLimiter = new RateLimiterRedis({
             redis: options.redisClient,
-            keyPrefix: 'middleware',
+            keyPrefix: 'rate-limit',
             points: options.points, //  options.points requests
             duration: options.duration, // per options.duration /interval second by IP
+            insuranceLimiter: rateLimiterMemory
         });
     }
 

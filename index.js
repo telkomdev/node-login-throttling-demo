@@ -31,11 +31,12 @@ const redisClient = redis.createClient({
     host: redisOptions.host,
     port: redisOptions.port,
     password: redisOptions.password,
-    db: redisOptions.db
+    db: redisOptions.db,
+    enable_offline_queue: false
 });
 
 // create RateLimit instance
-const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 3});
+const rateLimit = new RateLimit({redisClient: redisClient, points: 5, duration: 2});
 
 // construct express
 const app = express();
